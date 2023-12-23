@@ -1,0 +1,42 @@
+WITH -> 'с' #NAME#
+TO -> 'на' #NAME#
+
+NO -> 'не'
+YES -> 'да'
+NOT -> 'нет'
+
+SHOW -> 'показать'
+SUGGET -> 'рекомендовать'
+ADD -> 'добавить'
+SET -> 'установить'
+RESET -> 'сбросить'
+CHANGE -> 'заменить'
+
+ME -> 'я'
+LIKE -> 'нравиться'
+HATE -> 'ненавидеть'
+NOT_LIKE -> NO LIKE
+NOT_HATE -> NO HATE
+
+SESSION -> 'сессия'
+CURRENT -> 'текущая'
+HISTORY -> 'история'
+FILTER -> 'фильтер'
+SIMILAT -> 'похожий'
+MEASURE -> 'мера'
+STRATEGY -> 'стратегия'
+OTHER -> 'другой'
+OTHER -> 'еще'
+
+FILTER_WITH_NAME -> FILTER WITH
+MEASURE_TO_NAME -> MEASURE TO
+STRATEGY_TO_NAME -> STRATEGY TO
+
+RULE -> RULE_RESET_SESSION | RULE_RESET_HISTORY
+
+RULE_RESET_SESSION -> RESET SESSION | RESET CURRENT SESSION
+RULE_RESET_HISTORY -> RESET HISTORY
+
+RULE_CHANGE_STRATEGY -> CHANGE STRATEGY_TO_NAME
+
+% ================

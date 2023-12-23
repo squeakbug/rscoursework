@@ -7,9 +7,9 @@ from enum import Enum
 from typing import Optional
 from dataclass_csv import DataclassReader
 
-from filter import *
-from data import DatasetItem
-from recomendation_system import *
+from .filter import *
+from .data import DatasetItem
+from .recomendation_system import *
 
 
 class ClosenessStrategy(Enum):
@@ -28,15 +28,6 @@ class RecomendationStrategy(Enum):
     FilterFirst = 2
 
 
-@dataclass
-class User:
-    """
-    Структура пользователя
-    """
-
-    history: list
-
-
 def find_self(lst, key):
     for elem in lst:
         if key(elem):
@@ -45,7 +36,7 @@ def find_self(lst, key):
 
 
 query_rk1_aicourse_items = []
-with open("data/query-rk1-aicourse-10-14-2023-QueryResult.csv", "r") as csv_file:
+with open("../data/query-rk1-aicourse-10-14-2023-QueryResult.csv", "r") as csv_file:
     reader = csv.reader(csv_file)
     reader = DataclassReader(csv_file, DatasetItem, validate_header=False)
 
@@ -94,9 +85,7 @@ class RecomendationSystem:
 
         names = []
         for liked_name in names_like_likes:
-            dis_name = find_self(
-                names_like_dislikes, lambda name: name[0] == liked_name[0]
-            )
+            dis_name = find_self(names_like_dislikes, lambda name: name[0] == liked_name[0])
             new_weight = liked_name[1]
             if not dis_name is None:
                 new_weight -= dis_name[1]
@@ -142,10 +131,7 @@ class RecomendationSystem:
         matrix = []
         for first_name in sorted_names:
             matrix.append(
-                [
-                    self.measure_matrix_dict[first_name][second_name]
-                    for second_name in sorted_names
-                ]
+                [self.measure_matrix_dict[first_name][second_name] for second_name in sorted_names]
             )
         sns.heatmap(matrix)
         plt.show()
@@ -171,9 +157,7 @@ class RecomendationSystem:
 
         return result
 
-    def query_like(
-        self, likes: list[DatasetItem], limit: Optional[int]
-    ) -> list[DatasetItem]:
+    def query_like(self, likes: list[DatasetItem], limit: Optional[int]) -> list[DatasetItem]:
         for like in likes:
             row = self.measure_matrix_dict[like.name]
             if row == None:
@@ -193,6 +177,9 @@ class RecomendationSystem:
 
         items = [x for x in self.items if x.name in result]
         return items
+
+    def execute_command(self, cmd):
+        cmd.execute(self)
 
 
 def give_recomendation_filter_first_strategy(

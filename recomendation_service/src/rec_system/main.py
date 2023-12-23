@@ -1,4 +1,4 @@
-from cli import main_loop
+from nlp.nlp_cli import User, main_loop
 from domain import calc_measure_main
 from recomendation_system import RecomendationSystem, ClosenessStrategy
 
@@ -8,11 +8,10 @@ def main():
     rec_system.set_closeness_strategy(ClosenessStrategy.NearDistinctSeeds)
     rec_system.calc_measure_function(calc_measure_main)
 
-    likes = []
-    dislikes = []
+    user = User()
 
     while True:
-        rc = main_loop(rec_system, likes, dislikes)
+        rc = main_loop(rec_system, user)
         if rc == 1:
             return 0
 

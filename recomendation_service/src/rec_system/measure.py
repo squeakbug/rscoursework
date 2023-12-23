@@ -1,7 +1,7 @@
 import numpy as np
 
 
-# Центральый момент
+# Центральный момент
 def get_distance(v1, v2, nPow) -> float:
     res = 0.0
     for i in range(len(v1)):
@@ -33,10 +33,7 @@ def reverse_measure(field1: int, field2: int, min_field: int, max_field: int) ->
     if field1 == field2:
         return 0.0
     return 1.0 / (
-        abs(
-            normalize(field1, min_field, max_field)
-            - normalize(field2, min_field, max_field)
-        )
+        abs(normalize(field1, min_field, max_field) - normalize(field2, min_field, max_field))
     )
 
 
@@ -45,9 +42,7 @@ def cos_measure(v1, v2) -> float:
     v1T, v2T = v1.copy(), v2.copy()
     n = len(v1)
     indArr = [
-        i
-        for i, (elem1, elem2) in enumerate(zip(v1T, v2T))
-        if np.isnan(elem1) or np.isnan(elem2)
+        i for i, (elem1, elem2) in enumerate(zip(v1T, v2T)) if np.isnan(elem1) or np.isnan(elem2)
     ]
     v1T[:] = [elem for i, elem in enumerate(v1T) if i not in indArr]
     v2T[:] = [elem for i, elem in enumerate(v2T) if i not in indArr]

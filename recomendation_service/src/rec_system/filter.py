@@ -1,8 +1,8 @@
 from typing import Optional
 from dataclasses import dataclass
 
-from data import *
-from domain import *
+from .data import *
+from .domain import *
 
 
 @dataclass
@@ -72,12 +72,8 @@ def filter_items(
     items = filter_max(items, lambda item: item.width, filter.width_max)
     items = filter_min(items, lambda item: item.height, filter.height_min)
     items = filter_max(items, lambda item: item.height, filter.height_max)
-    items = filter_min(
-        items, lambda item: get_century_from_death(item.death), filter.century_min
-    )
-    items = filter_max(
-        items, lambda item: get_century_from_death(item.death), filter.century_max
-    )
+    items = filter_min(items, lambda item: get_century_from_death(item.death), filter.century_min)
+    items = filter_max(items, lambda item: get_century_from_death(item.death), filter.century_max)
 
     items = filter_eq(items, lambda item: item.name, filter.name)
     items = filter_eq(items, lambda item: item.full_name, filter.full_name)

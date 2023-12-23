@@ -3,8 +3,8 @@ import networkx as nx
 from enum import Enum
 from dataclasses import dataclass
 
-from measure import *
-from data import DatasetItem
+from .measure import *
+from .data import DatasetItem
 
 
 class PriceMeasure(Enum):
@@ -13,6 +13,7 @@ class PriceMeasure(Enum):
     OptimalPrice = 3
     LowPrice = 4
     TooLowPrice = 5
+
 
 G = nx.Graph()
 

@@ -1,0 +1,25 @@
+version: "3"
+services:
+  recognizer-service:
+    build: ./recognizer_service
+    image: squeakbug73/recognizer-service:0.1
+    restart: unless-stopped
+    container_name: recognizer-service
+    ports:
+      - "8080:8080"
+    networks:
+      - services-network
+  
+  recomendation-service:
+    build: ./recomendation_service
+    image: squeakbug73/recomendation-service:0.1
+    restart: unless-stopped
+    container_name: recomendation-service
+    ports:
+      - "8080:8080"
+    networks:
+      - services-network
+
+networks:
+  services-network:
+    driver: bridge
