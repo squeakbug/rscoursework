@@ -1,14 +1,12 @@
-import csv
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 
 from enum import Enum
 from typing import Optional
-from dataclass_csv import DataclassReader
 
 from .filter import *
-from .data import DatasetItem
+from ..domain.picture import DatasetItem
 from .recomendation_system import *
 
 
@@ -35,20 +33,14 @@ def find_self(lst, key):
     return None
 
 
-query_rk1_aicourse_items = []
-with open("../data/query-rk1-aicourse-10-14-2023-QueryResult.csv", "r") as csv_file:
-    reader = csv.reader(csv_file)
-    reader = DataclassReader(csv_file, DatasetItem, validate_header=False)
-
-    for item in reader:
-        query_rk1_aicourse_items.append(item)
-
-
 class RecomendationSystem:
-    items = query_rk1_aicourse_items
+    picture_repo = None
     measure_matrix_dict = None
     min_values: Ranger = None
     closeness_strategy: ClosenessStrategy = None
+
+    def __item__(self, picture_repo) -> None:
+        self.picture_repo = picture_repo
 
     def set_closeness_strategy(self, closeness_strategy: ClosenessStrategy):
         self.closeness_strategy = closeness_strategy

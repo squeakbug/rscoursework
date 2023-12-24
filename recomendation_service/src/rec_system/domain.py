@@ -4,7 +4,7 @@ from enum import Enum
 from dataclasses import dataclass
 
 from .measure import *
-from .data import DatasetItem
+from ..domain.picture import DatasetItem
 
 
 class PriceMeasure(Enum):

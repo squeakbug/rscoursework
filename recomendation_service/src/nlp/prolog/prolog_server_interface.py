@@ -4,7 +4,9 @@
 import requests
 
 from src.domain.rec_system_command_base import RecSystemCommandBase
-from src.domain.commands import CommandRecognizerResult
+from recomendation_service.src.rec_system.commands.other_cmds.hello_command import (
+    CommandRecognizerResult,
+)
 
 
 class PrologServer:
@@ -21,8 +23,9 @@ class PrologServer:
 
         json = {"tokens": tokenized_norm_user_input}
 
-        resp = requests.get(url=url, json=json)
+        resp = requests.post(url=url, json=json)
         data = resp.json()
+        print(data)
         rule_name = data["rule_name"]
         matchings = data["matchings"]
         result = CommandRecognizerResult(rule_name=rule_name, matchings=matchings)

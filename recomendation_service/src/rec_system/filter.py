@@ -1,8 +1,8 @@
 from typing import Optional
 from dataclasses import dataclass
 
-from .data import *
-from .domain import *
+from recomendation_service.src.domain.picture import *
+from src.rec_system.domain import *
 
 
 @dataclass
@@ -36,6 +36,30 @@ class Filter:
 
 
 # Вспомогательные функции API
+
+
+def filter_to_string(filter: Filter) -> str:
+    result = (
+        f"Название картины: {filter.name}\n"
+        f"Полное имя писателя: {filter.full_name}\n"
+        f"Ширина картины (max): {filter.width_max}\n"
+        f"Ширина картины (min): {filter.width_min}\n"
+        f"Высота картины (max): {filter.height_max}\n"
+        f"Высота картины (min): {filter.height_min}\n"
+        f"Цена (max): {filter.sale_price_max}\n"
+        f"Цена (min): {filter.sale_price_min}\n"
+        f"Век написания картины (max): {filter.century_max}\n"
+        f"Век написания картины (min): {filter.century_min}\n"
+        f"Страна писателя: {filter.country}\n"
+        f"Стиль: {filter.style}\n"
+        f"Предмет картины: {filter.subject}\n"
+        f"Жанр картины: {filter.genre}\n"
+        f"Техника написания: {filter.medium}\n"
+        f"Выставлена на обозрение (Да/Нет): {filter.exhibition}\n"
+        f"Для продажи (Да/Нет): {filter.for_sale}\n"
+        f"Реставрировалась (Да/Нет): {filter.restored}\n"
+    )
+    return result
 
 
 def filter_min(items: list, get_value_lambda, min_value: Optional[int]) -> list:
@@ -107,3 +131,8 @@ def test_filter_min():
     assert list(filtered) == [4, 5, 6]
     filtered = filter_max([1, 2, 3, 4, 5, 6], lambda x: x, 4)
     assert list(filtered) == [1, 2, 3, 4]
+
+
+if __name__ == "__main__":
+    filter = Filter
+    print(filter_to_string(filter))

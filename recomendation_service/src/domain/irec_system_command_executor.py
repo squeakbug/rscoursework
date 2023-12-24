@@ -1,7 +1,11 @@
+"""
+
+"""
+
 from typing import Optional
 
 from src.rec_system.recomendation_system import ClosenessStrategy
-from src.rec_system.data import DatasetItem
+from recomendation_service.src.domain.picture import DatasetItem
 from src.rec_system.filter import Filter
 
 

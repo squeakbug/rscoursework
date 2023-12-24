@@ -7,4 +7,5 @@ class ConversationContext:
     """
 
     id: UUID
-    last_query: str
+    queries: list
+    responses: list

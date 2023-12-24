@@ -174,24 +174,7 @@ main_filter = Filter()
 
 def print_filter(filter: Filter):
     print("\n========= Filter =========")
-    print("Название картины:", filter.name)
-    print("Полное имя писателя:", filter.full_name)
-    print("Ширина картины (max):", filter.width_max)
-    print("Ширина картины (min):", filter.width_min)
-    print("Высота картины (max):", filter.height_max)
-    print("Высота картины (min):", filter.height_min)
-    print("Цена (max):", filter.sale_price_max)
-    print("Цена (min):", filter.sale_price_min)
-    print("Век написания картины (max):", filter.century_max)
-    print("Век написания картины (min):", filter.century_min)
-    print("Страна писателя:", filter.country)
-    print("Стиль:", filter.style)
-    print("Предмет картины:", filter.subject)
-    print("Жанр картины:", filter.genre)
-    print("Техника написания:", filter.medium)
-    print("Выставлена на обозрение (Да/Нет):", filter.exhibition)
-    print("Для продажи (Да/Нет):", filter.for_sale)
-    print("Реставрировалась (Да/Нет):", filter.restored)
+    print(filter_to_string(filter))
 
 
 def main_loop(rec_system: RecomendationSystem, likes, dislikes) -> int:

@@ -1,4 +1,5 @@
-from uuid import UUID, uuid1
+from uuid import UUID
+from src.rec_system.filter import Filter
 
 
 class User:
@@ -8,3 +9,8 @@ class User:
 
     id: UUID
     conversation_context_id: UUID
+    filter: Filter
+    likes: list
+    dislikes: list
+    measure_func_name: str
+    strategy_name: str

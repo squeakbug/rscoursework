@@ -1,8 +1,10 @@
+from uuid import UUID
 from dataclasses import dataclass
 
 
 @dataclass
-class DatasetItem:
+class Picture:
+    id: UUID
     name: str
     full_name: str
     width: int
