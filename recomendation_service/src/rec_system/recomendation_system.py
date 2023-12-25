@@ -1,29 +1,16 @@
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-
-from enum import Enum
 from typing import Optional
 
-from .filter import *
-from ..domain.picture import DatasetItem
-from .recomendation_system import *
-
-
-class ClosenessStrategy(Enum):
-    """
-    Политика близости:
-    NearDistinctSeeds - искать в окрестности полученных от пользователя записей
-    NearGeneralCenter - искать в окрестности центра (по функции меры) полученных от пользователя записей
-    """
-
-    NearDistinctSeeds = 1
-    NearGeneralCenter = 2
-
-
-class RecomendationStrategy(Enum):
-    RecomendFirst = 1
-    FilterFirst = 2
+from src.rec_system.enums import ClosenessStrategy, RecomendationStrategy
+from src.rec_system.filter import (
+    Filter,
+    calc_measure_main,
+    calc_measure_money,
+    calc_ranger,
+    Ranger,
+    filter_items,
+)
+from src.domain.picture import Picture
+from src.repositories.pirtures_repo import PicturesRepositoryList
 
 
 def find_self(lst, key):
@@ -34,13 +21,26 @@ def find_self(lst, key):
 
 
 class RecomendationSystem:
-    picture_repo = None
-    measure_matrix_dict = None
+    picture_repo: PicturesRepositoryList = None
+    measure_money_matrix_dict = None
+    measure_base_matrix_dict = None
     min_values: Ranger = None
     closeness_strategy: ClosenessStrategy = None
 
-    def __item__(self, picture_repo) -> None:
+    def __init__(self, picture_repo: PicturesRepositoryList) -> None:
         self.picture_repo = picture_repo
+
+    def get_default_measure_func_name(self, ) -> str:
+        return ""
+
+    def get_default_strategy_name(self, ) -> str:
+        return ""
+    
+    def get_strategies(self, ) -> list:
+        return []
+    
+    def get_measures(self, ) -> list:
+        return []
 
     def set_closeness_strategy(self, closeness_strategy: ClosenessStrategy):
         self.closeness_strategy = closeness_strategy
@@ -64,11 +64,11 @@ class RecomendationSystem:
 
     def do_recomendation(
         self,
-        items: list[DatasetItem],
-        likes: list[DatasetItem],
-        dislikes: list[DatasetItem],
+        items: list[Picture],
+        likes: list[Picture],
+        dislikes: list[Picture],
         limit: Optional[int],
-    ) -> list[DatasetItem]:
+    ) -> list[Picture]:
         """
         В сортированном по близости к лайкам списке уменьшаем вес элементов на их вес в списке близких к дизлайкам элементов
         """
@@ -94,8 +94,8 @@ class RecomendationSystem:
             result = result[:limit]
         return result
 
-    def query_all(self, limit: Optional[int]) -> list[DatasetItem]:
-        items = [_ for _ in query_rk1_aicourse_items]
+    def query_all(self, limit: Optional[int]) -> list[Picture]:
+        items = self.picture_repo.select_all()
         if not limit is None:
             items = items[:limit]
         return items
@@ -104,33 +104,16 @@ class RecomendationSystem:
         self,
         filter: Filter,
         limit: Optional[int],
-    ) -> list[DatasetItem]:
-        items = [_ for _ in query_rk1_aicourse_items]
+    ) -> list[Picture]:
+        items = self.picture_repo.select_all()
         items = filter_items(items, filter)
         if not limit is None:
             items = items[:limit]
         return items
 
-    def visualize_matrix(self):
-        # Получить список кортежей (имя, расстояние до 1-го элемента)
-        first_row = self.measure_matrix_dict[self.items[0].name].items()
-
-        # Отсортировать список по увеличению расстояния до 1-го элемента
-        sorted_first_row = sorted(first_row, key=lambda x: x[1])
-        sorted_names = [x[0] for x in sorted_first_row]
-
-        # Выборка значений по именам
-        matrix = []
-        for first_name in sorted_names:
-            matrix.append(
-                [self.measure_matrix_dict[first_name][second_name] for second_name in sorted_names]
-            )
-        sns.heatmap(matrix)
-        plt.show()
-
     def query_names_like_weighted(
-        self, items: list[DatasetItem], likes: list[DatasetItem], limit: Optional[int]
-    ) -> list[tuple[DatasetItem, float]]:
+        self, items: list[Picture], likes: list[Picture], limit: Optional[int]
+    ) -> list[tuple[Picture, float]]:
         for like in likes:
             row = self.measure_matrix_dict[like.name]
             if row == None:
@@ -149,7 +132,7 @@ class RecomendationSystem:
 
         return result
 
-    def query_like(self, likes: list[DatasetItem], limit: Optional[int]) -> list[DatasetItem]:
+    def query_like(self, likes: list[Picture], limit: Optional[int]) -> list[Picture]:
         for like in likes:
             row = self.measure_matrix_dict[like.name]
             if row == None:
@@ -170,43 +153,61 @@ class RecomendationSystem:
         items = [x for x in self.items if x.name in result]
         return items
 
-    def execute_command(self, cmd):
-        cmd.execute(self)
+    def give_recomendation_filter_first_strategy(
+        self,
+        likes: list[Picture],
+        dislikes: list[Picture],
+        filter: Filter,
+    ) -> list:
+        """
+        Получить отсортированный по "близости" список рекомендаций:
+        Make selection based on provided filter
+        Make recomendation based on selected items, dislikes and likes
+        """
+        items = self.picture_repo.select_all()
+        filtered_items = filter_items(items, filter, None)
+        filtered_item_names = [item.name for item in filtered_items]
+        for like in likes:
+            if not like.name in filtered_item_names:
+                filtered_items.append(like)
+        items = self.do_recomendation(items, filtered_items, dislikes, None)
+        return items
+
+    def give_recomendation_recomend_first_strategy(
+        self,
+        likes: list[Picture],
+        dislikes: list[Picture],
+        filter: Filter,
+    ) -> list:
+        """
+        Получить отсортированный по "близости" список рекомендаций:
+        Make recomendation based on likes and dislikes
+        Make selection based on finded items and filters
+        """
+        items = self.picture_repo.select_all()
+        items = self.do_recomendation(items, likes, dislikes, None)
+        items = filter_items(items, filter, None)
+        return items
 
 
-def give_recomendation_filter_first_strategy(
-    rec_system: RecomendationSystem,
-    likes: list[DatasetItem],
-    dislikes: list[DatasetItem],
-    filter: Filter,
-) -> list:
-    """
-    Получить отсортированный по "близости" список рекомендаций:
-    Make selection based on provided filter
-    Make recomendation based on selected items, dislikes and likes
-    """
-    items = query_rk1_aicourse_items
-    filtered_items = filter_items(items, filter, None)
-    filtered_item_names = [item.name for item in filtered_items]
-    for like in likes:
-        if not like.name in filtered_item_names:
-            filtered_items.append(like)
-    items = rec_system.do_recomendation(items, filtered_items, dislikes, None)
-    return items
+"""
+import seaborn as sns
+import matplotlib.pyplot as plt
 
+def visualize_matrix(self):
+    # Получить список кортежей (имя, расстояние до 1-го элемента)
+    first_row = self.measure_matrix_dict[self.items[0].name].items()
 
-def give_recomendation_recomend_first_strategy(
-    rec_system: RecomendationSystem,
-    likes: list[DatasetItem],
-    dislikes: list[DatasetItem],
-    filter: Filter,
-) -> list:
-    """
-    Получить отсортированный по "близости" список рекомендаций:
-    Make recomendation based on likes and dislikes
-    Make selection based on finded items and filters
-    """
-    items = query_rk1_aicourse_items
-    items = rec_system.do_recomendation(items, likes, dislikes, None)
-    items = filter_items(items, filter, None)
-    return items
+    # Отсортировать список по увеличению расстояния до 1-го элемента
+    sorted_first_row = sorted(first_row, key=lambda x: x[1])
+    sorted_names = [x[0] for x in sorted_first_row]
+
+    # Выборка значений по именам
+    matrix = []
+    for first_name in sorted_names:
+        matrix.append(
+            [self.measure_matrix_dict[first_name][second_name] for second_name in sorted_names]
+        )
+    sns.heatmap(matrix)
+    plt.show()
+"""

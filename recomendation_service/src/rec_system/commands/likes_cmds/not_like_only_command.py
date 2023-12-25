@@ -5,8 +5,8 @@ from src.domain.icommand_response import ICommandResponse
 
 
 class NotLikeOnlyCommandContructor(ICommandConstructor):
-    def construct(self, matchings: CommandRecognizerResult) -> RecSystemCommandBase:
-        picture_name_list = matchings["picture_name_list"]
+    def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
+        picture_name_list = cmd_reg_res.matchings["picture_name_list"]
         return NotLikeOnlyCommand(picture_name_list)
 
 

@@ -11,8 +11,8 @@ class ChangeMeasureCommandContructor(ICommandConstructor):
         super().__init__()
         self.user_repo = user_repo
 
-    def construct(self, matchings: CommandRecognizerResult) -> RecSystemCommandBase:
-        measure_name = matchings["measure_name"]
+    def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
+        measure_name = cmd_reg_res.matchings["measure_name"]
         return ChangeMeasureCommand(measure_name, self.user_repo)
 
 

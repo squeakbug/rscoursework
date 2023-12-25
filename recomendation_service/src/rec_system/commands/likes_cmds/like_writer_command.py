@@ -5,8 +5,8 @@ from src.domain.icommand_response import ICommandResponse
 
 
 class LikeWriterCommandContructor(ICommandConstructor):
-    def construct(self, matchings: CommandRecognizerResult) -> RecSystemCommandBase:
-        writer_name = matchings["writer_name"]
+    def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
+        writer_name = cmd_reg_res.matchings["writer_name"]
         return LikeWriterCommand(writer_name)
 
 

@@ -6,7 +6,6 @@ from nltk.tokenize import word_tokenize
 
 nltk.download("punkt")
 nltk.download("stopwords")
-nltk.download("corpus")
 
 morph = pymorphy3.MorphAnalyzer()
 

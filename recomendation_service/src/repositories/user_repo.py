@@ -14,7 +14,7 @@ class UserRepositoryList:
         return user
 
     def update_user(self, id: UUID, user: User) -> User:
-        indx = next((usr for usr, e in enumerate(self.users) if usr.id == id), -1)
+        indx = next((e for e, usr in enumerate(self.users) if usr.id == id), -1)
         if indx == -1:
             return None
         else:
@@ -22,6 +22,6 @@ class UserRepositoryList:
             return self.users[indx]
 
     def delete_user(self, id: UUID):
-        indx = next((usr for usr, e in enumerate(self.users) if usr.id == id), -1)
+        indx = next((e for e, usr in enumerate(self.users) if usr.id == id), -1)
         if indx != -1:
             del self.users[indx]

@@ -13,14 +13,12 @@ from src.nlp.prolog.command_dispatcher import CommandDispatcherProlog
 from src.nlp.nlprocessor import NLProcessor
 from src.domain.picture import Picture
 from src.repositories.pirtures_repo import PicturesRepositoryList
-from recomendation_service.src.rec_system.commands.other_cmds.hello_command import (
-    HelloCommandContructor,
-)
 from src.rec_system.recomendation_system import RecomendationSystem
-from recomendation_service.src.repositories.conversation_context_repo import (
+from src.repositories.conversation_context_repo import (
     ConversationContextRepositoryList,
 )
-from recomendation_service.src.repositories.user_repo import UserRepositoryList
+from src.repositories.user_repo import UserRepositoryList
+from src.telegram_interface.commands import *
 
 
 logging.basicConfig(
@@ -47,7 +45,23 @@ class DatasetItem:
 
 
 def from_dataset_item_to_pic(item: DatasetItem) -> Picture:
-    pic = Picture(id=uuid.uuid1(), name=item.name)
+    pic = Picture(
+        id=uuid.uuid1(),
+        name=item.name,
+        country=item.country,
+        death=item.death,
+        exhibition=item.exhibition,
+        for_sale=item.for_sale,
+        full_name=item.full_name,
+        genre=item.genre,
+        height=item.height,
+        medium=item.medium,
+        restored=item.restored,
+        sale_price=item.sale_price,
+        style=item.style,
+        subject=item.subject,
+        width=item.width,
+    )
     return pic
 
 
@@ -62,10 +76,14 @@ with open("../data/query-rk1-aicourse-10-14-2023-QueryResult.csv", "r") as csv_f
 
 
 config = make_config()
-dispatcher = CommandDispatcherProlog(config)
-dispatcher.registrate_cmd("r_hello", HelloCommandContructor())
 user_repo = UserRepositoryList()
 conv_ctx_repo = ConversationContextRepositoryList()
+dispatcher = CommandDispatcherProlog(config)
+dispatcher.registrate_cmd("r_hello", HelloCommandContructor())
+dispatcher.registrate_cmd("r_change_strategy", ChangeStrategyCommandContructor(user_repo))
+dispatcher.registrate_cmd("r_show_strategy", ShowStrategyCommandContructor())
+dispatcher.registrate_cmd("r_change_measure", ChangeMeasureCommandContructor(user_repo))
+dispatcher.registrate_cmd("r_show_measure", ShowMeasureCommandContructor())
 nlprocessor = NLProcessor(dispatcher, conv_ctx_repo)
 rec_system = RecomendationSystem(picture_repo)
 rec_service = RecomendationService(nlprocessor, user_repo, conv_ctx_repo, rec_system)

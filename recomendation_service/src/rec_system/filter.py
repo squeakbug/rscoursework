@@ -1,7 +1,7 @@
 from typing import Optional
 from dataclasses import dataclass
 
-from recomendation_service.src.domain.picture import *
+from src.domain.picture import *
 from src.rec_system.domain import *
 
 
@@ -89,9 +89,7 @@ def filter_eq(items: list, get_value_lambda, exact_value) -> list:
     )
 
 
-def filter_items(
-    items: list[DatasetItem], filter: Filter, limit: Optional[int]
-) -> list[DatasetItem]:
+def filter_items(items: list[Picture], filter: Filter, limit: Optional[int]) -> list[Picture]:
     items = filter_min(items, lambda item: item.width, filter.width_min)
     items = filter_max(items, lambda item: item.width, filter.width_max)
     items = filter_min(items, lambda item: item.height, filter.height_min)

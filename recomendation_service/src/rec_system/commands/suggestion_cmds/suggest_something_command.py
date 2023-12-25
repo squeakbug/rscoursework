@@ -5,8 +5,8 @@ from src.domain.icommand_response import ICommandResponse
 
 
 class SuggestSomethingCommandContructor(ICommandConstructor):
-    def construct(self, recognize_result: CommandRecognizerResult) -> RecSystemCommandBase:
-        suggestions = recognize_result.matchings["suggestion"]
+    def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
+        suggestions = cmd_reg_res.matchings["suggestion"]
         return SuggestSomethingCommand()
 
 

@@ -22,6 +22,6 @@ class ShowStrategyCommand(RecSystemCommandBase):
         super().__init__()
 
     def execute(self) -> ICommandResponse:
-        current_strategy_name = self.executor.get_current_strategy()
+        current_strategy_name = self.user.strategy_name
         response = ShowStrategyCommandResponse(strategy_name=current_strategy_name)
         return response

@@ -4,24 +4,25 @@ from src.domain.icommand_constructor import ICommandConstructor, CommandRecogniz
 from src.domain.icommand_response import ICommandResponse
 
 
-class ShowMeasureCommandContructor(ICommandConstructor):
+class UnknownCommandContructor(ICommandConstructor):
     def construct(self, _: CommandRecognizerResult) -> RecSystemCommandBase:
-        return ShowMeasureCommand()
+        return UnknownCommand()
 
 
-class ShowMeasureCommandResponse(ICommandResponse):
-    def __init__(self, measure_name: str):
-        self.measure_name = measure_name
-
-    def form_message(self) -> str:
-        return f"Текущая мера - {self.measure_name}"
-
-
-class ShowMeasureCommand(RecSystemCommandBase):
+class UnknownCommandResponse(ICommandResponse):
     def __init__(self) -> None:
         super().__init__()
 
+    def form_message(self) -> str:
+        return "Я не могу распознать ваш запрос"
+
+
+class UnknownCommand(RecSystemCommandBase):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def get_measure(self, _: str):
+        return 1
+
     def execute(self) -> ICommandResponse:
-        current_measure_name = self.user.measure_func_name
-        response = ShowMeasureCommandResponse(measure_name=current_measure_name)
-        return response
+        return UnknownCommandResponse()

@@ -12,9 +12,9 @@ class AddFilterWithValueCommandContructor(ICommandConstructor):
         super().__init__()
         self.user_repo = user_repo
 
-    def construct(self, matchings: CommandRecognizerResult) -> RecSystemCommandBase:
-        filter_name = matchings["filter_name"]
-        filter_value = matchings["filter_value"]
+    def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
+        filter_name = cmd_reg_res.matchings["filter_name"]
+        filter_value = cmd_reg_res.matchings["filter_value"]
         return AddFilterWithValueCommand(filter_name, filter_value, self.user_repo)
 
 

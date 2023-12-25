@@ -15,3 +15,13 @@ rule(r_change_measure, OM, A, IM, Z) :-
 rule(r_show_measure, IM, A, IM, Z) :-
     show(A, B),
     measure(B, Z).
+
+rule(r_show_possible_measures, IM, A, IM, Z) :-
+    show(A, B),
+    possible(B, C),
+    measure(C, Z).
+
+rule(r_show_possible_strategies, IM, A, IM, Z) :-
+    show(A, B),
+    possible(B, C),
+    strategy(C, Z).

@@ -10,7 +10,7 @@ class User:
     id: UUID
     conversation_context_id: UUID
     filter: Filter
-    likes: list
-    dislikes: list
+    likes: list[UUID]
+    dislikes: list[UUID]
     measure_func_name: str
     strategy_name: str

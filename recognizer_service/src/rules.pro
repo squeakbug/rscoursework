@@ -13,3 +13,5 @@
 
 main_rule(RuleName, OM, Sentence) :-
     rule(RuleName, OM, Sentence, _{}, []).
+
+main_rule(unknown, _{}, _).

@@ -7,5 +7,5 @@ class ConversationContext:
     """
 
     id: UUID
-    queries: list
-    responses: list
+    queries: list = []
+    responses: list = []

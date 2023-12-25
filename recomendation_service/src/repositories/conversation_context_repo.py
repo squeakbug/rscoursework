@@ -14,7 +14,7 @@ class ConversationContextRepositoryList:
         return ctx
 
     def update_context(self, id: UUID, ctx: ConversationContext) -> ConversationContext:
-        indx = next((ctx for ctx, e in enumerate(self.contexts) if ctx.id == id), -1)
+        indx = next((e for e, ctx in enumerate(self.contexts) if ctx.id == id), -1)
         if indx == -1:
             return None
         else:
@@ -22,6 +22,6 @@ class ConversationContextRepositoryList:
             return self.contexts[indx]
 
     def delete_context(self, id: UUID):
-        indx = next((ctx for ctx, e in enumerate(self.contexts) if ctx.id == id), -1)
+        indx = next((e for e, ctx in enumerate(self.contexts) if ctx.id == id), -1)
         if indx != -1:
             del self.contexts[indx]

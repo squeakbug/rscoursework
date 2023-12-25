@@ -1,13 +1,13 @@
 from src.domain.user import User
 from src.domain.conversation_context import ConversationContext
-from recomendation_service.src.rec_system.commands.other_cmds.hello_command import (
+from src.rec_system.commands.other_cmds.hello_command import (
     RecSystemCommandBase,
 )
-from recomendation_service.src.repositories.conversation_context_repo import (
+from src.repositories.conversation_context_repo import (
     ConversationContextRepositoryList,
 )
 from src.domain.icommand_response import ICommandResponse
-from .icommand_dispatcher import ICommandDispatcher
+from src.nlp.icommand_dispatcher import ICommandDispatcher
 
 
 class NLProcessor:

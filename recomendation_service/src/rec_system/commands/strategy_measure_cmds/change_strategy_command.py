@@ -1,3 +1,5 @@
+import logging
+
 from src.domain.rec_system_command_base import RecSystemCommandBase
 from src.domain.icommand_constructor import ICommandConstructor, CommandRecognizerResult
 from src.domain.icommand_response import ICommandResponse
@@ -11,8 +13,8 @@ class ChangeStrategyCommandContructor(ICommandConstructor):
         super().__init__()
         self.user_repo = user_repo
 
-    def construct(self, matchings: CommandRecognizerResult) -> RecSystemCommandBase:
-        strategy_name = matchings["strategy_name"]
+    def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
+        strategy_name = cmd_reg_res.matchings["strategy_name"]
         return ChangeStrategyCommand(strategy_name, self.user_repo)
 
 

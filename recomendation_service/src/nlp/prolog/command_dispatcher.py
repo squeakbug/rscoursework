@@ -3,6 +3,7 @@ from src.nlp.preprocessing import preprocessing
 from src.domain.rec_system_command_base import RecSystemCommandBase
 from src.domain.user import User
 from .prolog_server_interface import PrologServer
+from src.rec_system.commands.other_cmds.unknown_command import UnknownCommand
 
 
 class CommandDispatcherProlog(ICommandDispatcher):

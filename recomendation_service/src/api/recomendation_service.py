@@ -1,8 +1,8 @@
 import logging
 from uuid import UUID, uuid1
 
-from recomendation_service.src.repositories.user_repo import UserRepositoryList
-from recomendation_service.src.repositories.conversation_context_repo import (
+from src.repositories.user_repo import UserRepositoryList
+from src.repositories.conversation_context_repo import (
     ConversationContextRepositoryList,
 )
 from src.domain.user import User
@@ -34,6 +34,8 @@ class RecomendationService:
         user.id = user_id
         user.likes = []
         user.dislikes = []
+        user.measure_func_name = self.rec_system.get_default_measure_func_name()
+        user.strategy_name = self.rec_system.get_default_strategy_name()
         conversation_ctx = ConversationContext()
         conversation_ctx.id = uuid1()
         new_conv_ctx = self.ctx_repo.create_context(conversation_ctx)
@@ -44,8 +46,7 @@ class RecomendationService:
     def process_text(self, user_id: UUID, request_text: str) -> str:
         user = self.user_repo.get_user_by_id(user_id)
         if user is None:
-            new_user = self.create_default_user()
-            user = self.user_repo.create_user(new_user)
+            return "Сначала необходимо зарегистрироваться (введите /start)"
 
         command_to_rs = self.nlprocessor.form_command(user, request_text)
         command_to_rs.set_executor(self.rec_system)
@@ -59,10 +60,6 @@ class RecomendationService:
         self.ctx_repo.update_context(ctx.id, ctx)
 
         return response_text
-
-    def create_default_user(self) -> User:
-        user = User()
-        return user
 
 
 if __name__ == "__main__":

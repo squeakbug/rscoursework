@@ -3,8 +3,8 @@ import networkx as nx
 from enum import Enum
 from dataclasses import dataclass
 
-from .measure import *
-from ..domain.picture import DatasetItem
+from src.rec_system.measure import *
+from src.domain.picture import Picture
 
 
 class PriceMeasure(Enum):
@@ -245,7 +245,7 @@ class Ranger:
     century_max: int = 0
 
 
-def calc_ranger(items: list[DatasetItem]) -> Ranger:
+def calc_ranger(items: list[Picture]) -> Ranger:
     ranger = Ranger()
     if len(items) == 0:
         return ranger
