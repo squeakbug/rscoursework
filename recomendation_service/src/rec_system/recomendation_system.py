@@ -30,16 +30,24 @@ class RecomendationSystem:
     def __init__(self, picture_repo: PicturesRepositoryList) -> None:
         self.picture_repo = picture_repo
 
-    def get_default_measure_func_name(self, ) -> str:
+    def get_default_measure_func_name(
+        self,
+    ) -> str:
         return ""
 
-    def get_default_strategy_name(self, ) -> str:
+    def get_default_strategy_name(
+        self,
+    ) -> str:
         return ""
-    
-    def get_strategies(self, ) -> list:
+
+    def get_strategies(
+        self,
+    ) -> list:
         return []
-    
-    def get_measures(self, ) -> list:
+
+    def get_measures(
+        self,
+    ) -> list:
         return []
 
     def set_closeness_strategy(self, closeness_strategy: ClosenessStrategy):

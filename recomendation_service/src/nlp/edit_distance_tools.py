@@ -203,28 +203,51 @@ def replace_strategy_name(user_input: str):
 
 
 def get_most_similar_filter_name(user_input: str):
-    strategies_names = ["рекомендация вначале", "фильтрация вначале"]
-    return get_most_similar_base(user_input, strategies_names)
+    filter_names = [
+        "название картины",
+        "имя писателя",
+        "минимальная ширина картины",
+        "максимальная ширина картины",
+        "минимальная высота картины",
+        "максимальная высота картины",
+        "минимальная цена",
+        "максимальная цена",
+        "минимальный век написания",
+        "максимальный век написания",
+        "страна",
+        "стиль",
+        "предмет",
+        "жанр",
+        "техника",
+        "выставлена на обозрение",
+        "для продажи",
+        "реставрирована",
+    ]
+    return get_most_similar_base(user_input, filter_names)
 
 
 def replace_filter_name(user_input: str):
     strategy_names_dict = {
-        "название картины": "RecomendFirst",
-        "имя писателя": "FilterFirst",
-        "ширина картины": "FilterFirst",
-        "высота картины": "FilterFirst",
-        "цена": "FilterFirst",
-        "век написания": "FilterFirst",
-        "страна": "FilterFirst",
-        "стиль": "FilterFirst",
-        "предмет": "FilterFirst",
-        "жанр": "FilterFirst",
-        "техника": "FilterFirst",
-        "выставлена на обозрение": "FilterFirst",
-        "для продажи": "FilterFirst",
-        "реставрирована": "FilterFirst",
+        "название картины": "name",
+        "имя писателя": "full_name",
+        "минимальная ширина картины": "width_min",
+        "максимальная ширина картины": "width_max",
+        "минимальная высота картины": "height_min",
+        "максимальная высота картины": "height_max",
+        "минимальная цена": "sale_price_min",
+        "максимальная цена": "sale_price_max",
+        "минимальный век написания": "century_min",
+        "максимальный век написания": "century_max",
+        "страна": "country",
+        "стиль": "style",
+        "предмет": "subject",
+        "жанр": "genre",
+        "техника": "medium",
+        "выставлена на обозрение": "exhibition",
+        "для продажи": "for_sale",
+        "реставрирована": "restored",
     }
-    return strategy_names_dict[get_most_similar_strategy_name(user_input)]
+    return strategy_names_dict[get_most_similar_filter_name(user_input)]
 
 
 def get_most_similar_picture_name(user_input: str, picture_names: list):

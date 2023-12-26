@@ -9,6 +9,7 @@ from src.domain.user import User
 from src.domain.conversation_context import ConversationContext
 from src.rec_system.recomendation_system import RecomendationSystem
 from src.nlp.nlprocessor import NLProcessor
+from src.rec_system.filter import Filter
 
 
 class RecomendationService:
@@ -34,6 +35,7 @@ class RecomendationService:
         user.id = user_id
         user.likes = []
         user.dislikes = []
+        user.filter = Filter()
         user.measure_func_name = self.rec_system.get_default_measure_func_name()
         user.strategy_name = self.rec_system.get_default_strategy_name()
         conversation_ctx = ConversationContext()

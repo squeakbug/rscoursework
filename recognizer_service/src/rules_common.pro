@@ -2,6 +2,14 @@ with([с | X], X).
 with([с, Object | X], Object, X).
 to([на, Object | X], Object, X).
 
+name_list([HNL, ',' | TA], [HNL | TNL], Z) :-
+    name_list(TA, TNL, Z).
+name_list([HNL1, и, HNL2 | Z], [HNL1, HNL2], Z).
+
+name_ws_list([HNL | TA], [HNL | TNL], Z) :-
+    name_ws_list(TA, TNL, Z).
+name_ws_list(Z, [], Z).
+
 no([не | X], X).
 yes([да | X], X).
 not([нет | X], X).
@@ -43,9 +51,13 @@ other([еще | X], X).
 possible([возможный | X], X).
 likes([понравившиеся | X], X).
 dislikes([непонравившиеся | X], X).
+eq([равно | X], X).
 eq([равный | X], X).
+eq([равно, Value | X], Value, X).
+eq([равный, Value | X], Value, X).
 name([название | X], X).
 name([название, Name | X], Name, X).
+value([значение | X], X).
 
 with_name(A, Name, Z) :-
     with(A, B),
@@ -53,6 +65,13 @@ with_name(A, Name, Z) :-
 filter_with_name(A, Name, Z) :-
     filter(A, B),
     with_name(B, Name, Z).
+with_name_ws_list(A, NameList, Z) :-
+    with(A, B),
+    name(B, C),
+    name_ws_list(C, NameList, Z).
+filter_with_name_list(A, NameList, Z) :-
+    filter(A, B),
+    with_name_ws_list(B, NameList, Z).
 measure_to_name(A, Name, Z) :-
     measure(A, B),
     to(B, Name, Z).
@@ -70,14 +89,12 @@ writer_name(A, Name, Z) :-
 value([значение, Value | X], Value, X).
 value_eq([значение, равный, Value | X], Value, X).
 
-name_list([HNL, ',' | TA], [HNL | TNL], Z) :-
-    name_list(TA, TNL, Z).
-name_list([HNL1, и, HNL2 | Z], [HNL1, HNL2], Z).
-
 %% Тесты
 
 :- filter_with_name([фильтр, с, название, ширина], ширина, []).
 
 :- value([значение, 10], 10, []).
 
-name_list([привет, ',', привет, и, привет], [привет, привет, привет], []).
+:- name_list([привет, ',', привет, и, привет], [привет, привет, привет], []).
+:- with_name_ws_list([с, название, муад, даби], [муад, даби], []).
+:- filter_with_name_list([фильтр, с, название, муад, даби], [муад, даби], []).

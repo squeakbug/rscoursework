@@ -80,10 +80,18 @@ user_repo = UserRepositoryList()
 conv_ctx_repo = ConversationContextRepositoryList()
 dispatcher = CommandDispatcherProlog(config)
 dispatcher.registrate_cmd("r_hello", HelloCommandContructor())
+
 dispatcher.registrate_cmd("r_change_strategy", ChangeStrategyCommandContructor(user_repo))
 dispatcher.registrate_cmd("r_show_strategy", ShowStrategyCommandContructor())
 dispatcher.registrate_cmd("r_change_measure", ChangeMeasureCommandContructor(user_repo))
 dispatcher.registrate_cmd("r_show_measure", ShowMeasureCommandContructor())
+
+dispatcher.registrate_cmd("r_add_filter", AddFilterCommandContructor())
+dispatcher.registrate_cmd("r_add_filter_with_value", AddFilterWithValueCommandContructor(user_repo))
+dispatcher.registrate_cmd("r_reset_filter", ResetFilterCommandContructor())
+dispatcher.registrate_cmd("r_show_filters", ShowFiltersCommandContructor())
+dispatcher.registrate_cmd("r_filter_value_eq", FilterValueEqCommandContructor(user_repo, conv_ctx_repo))
+
 nlprocessor = NLProcessor(dispatcher, conv_ctx_repo)
 rec_system = RecomendationSystem(picture_repo)
 rec_service = RecomendationService(nlprocessor, user_repo, conv_ctx_repo, rec_system)

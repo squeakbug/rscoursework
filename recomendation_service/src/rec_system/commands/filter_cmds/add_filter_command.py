@@ -6,7 +6,8 @@ from src.domain.icommand_response import ICommandResponse
 
 class AddFilterCommandContructor(ICommandConstructor):
     def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
-        filter_name = cmd_reg_res.matchings["filter_name"]
+        filter_name_list = cmd_reg_res.matchings["filter_name"]
+        filter_name = " ".join(filter_name_list)
         return AddFilterCommand(filter_name=filter_name)
 
 

@@ -27,19 +27,35 @@
         []
     ).
 
-:- rule(r_add_filter_with_value,
-        _{filter_name: 'ширина', filter_value: '10'}, 
+:- rule(r_add_filter,
+        _{filter_name: ['ширина', 'картины']}, 
         [добавить, фильтр, с, название, ширина, с, значение, равный, '10'], 
         _{},
         []
     ).
-
 :- rule(r_add_filter_with_value,
-        _{filter_name: 'ширина', filter_value: '10'}, 
+        _{filter_name: ['ширина'], filter_value: '10'}, 
+        [добавить, фильтр, с, название, ширина, с, значение, равный, '10'], 
+        _{},
+        []
+    ).
+:- rule(r_add_filter_with_value,
+        _{filter_name: ['ширина'], filter_value: '10'}, 
         [добавить, фильтр, с, название, ширина, с, значение, '10'], 
         _{},
         []
     ).
+:- rule(r_add_filter_with_value,
+        _{filter_name: ['ширина', 'картины'], filter_value: '10'}, 
+        [добавить, фильтр, с, название, ширина, картины, с, значение, '10'], 
+        _{},
+        []
+    ).
+:- rule(r_filter_value_eq,
+        _{filter_value: '10'},
+        [значение, фильтр, равный, '10'],
+        _{},
+        []).
 
 :- rule(r_like_only,
         _{picture_name_list: [дюна, махди]}, 

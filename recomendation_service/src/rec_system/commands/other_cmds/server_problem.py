@@ -14,8 +14,7 @@ class ServerProblemCommandResponse(ICommandResponse):
         super().__init__()
 
     def form_message(self) -> str:
-        return "Что-то пошло не так на сервере.\n" \
-            "Обратитесь к системному администратору"
+        return "Что-то пошло не так на сервере.\n" "Обратитесь к системному администратору"
 
 
 class ServerProblemCommand(RecSystemCommandBase):
