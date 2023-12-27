@@ -19,11 +19,27 @@ from src.repositories.conversation_context_repo import (
 )
 from src.repositories.user_repo import UserRepositoryList
 from src.telegram_interface.commands import *
+from src.rec_system.filter import calc_ranger
+from src.rec_system.domain import calc_measure_main, calc_measure_money
 
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
+
+
+def calc_measure_function(items, calc_func):
+    min_values = calc_ranger(items)
+    measure_matrix_dict = dict(
+        [
+            (
+                item1.name,
+                dict([(item2.name, calc_func(item1, item2, min_values)) for item2 in items]),
+            )
+            for item1 in items
+        ]
+    )
+    return measure_matrix_dict
 
 
 @dataclass
@@ -80,20 +96,51 @@ user_repo = UserRepositoryList()
 conv_ctx_repo = ConversationContextRepositoryList()
 dispatcher = CommandDispatcherProlog(config)
 dispatcher.registrate_cmd("r_hello", HelloCommandContructor())
+dispatcher.registrate_cmd("r_911", SosCommandContructor())
+dispatcher.registrate_cmd("r_for_pleasure", ForPleasureCommandContructor())
 
 dispatcher.registrate_cmd("r_change_strategy", ChangeStrategyCommandContructor(user_repo))
 dispatcher.registrate_cmd("r_show_strategy", ShowStrategyCommandContructor())
 dispatcher.registrate_cmd("r_change_measure", ChangeMeasureCommandContructor(user_repo))
 dispatcher.registrate_cmd("r_show_measure", ShowMeasureCommandContructor())
+dispatcher.registrate_cmd("r_show_possible_strategies", ShowPossibleStrategiesCommandContructor())
+dispatcher.registrate_cmd("r_show_possible_measures", ShowPossibleMeasuresCommandContructor())
 
 dispatcher.registrate_cmd("r_add_filter", AddFilterCommandContructor())
-dispatcher.registrate_cmd("r_add_filter_with_value", AddFilterWithValueCommandContructor(user_repo))
+dispatcher.registrate_cmd(
+    "r_add_filter_with_value", AddFilterWithValueCommandContructor(user_repo)
+)
 dispatcher.registrate_cmd("r_reset_filter", ResetFilterCommandContructor())
 dispatcher.registrate_cmd("r_show_filters", ShowFiltersCommandContructor())
-dispatcher.registrate_cmd("r_filter_value_eq", FilterValueEqCommandContructor(user_repo, conv_ctx_repo))
+dispatcher.registrate_cmd(
+    "r_filter_value_eq", FilterValueEqCommandContructor(user_repo, conv_ctx_repo)
+)
+
+dispatcher.registrate_cmd("r_show_likes", ShowLikesCommandContructor(picture_repo))
+dispatcher.registrate_cmd("r_show_dislikes", ShowDislikesCommandContructor(picture_repo))
+dispatcher.registrate_cmd("r_like_writer", LikeWriterCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_like_only", LikeOnlyCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_hate_writer", HateWriterCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_hate_only", HateOnlyCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_hate_picturers", HatePicturersCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_not_like_writer", NotLikeWriterCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_not_like_only", NotLikeOnlyCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_not_hate_writer", NotHateWriterCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_not_hate_only", NotHateOnlyCommandContructor(user_repo, picture_repo))
+dispatcher.registrate_cmd("r_not_hate_picturers", NotHatePicturersCommandContructor(user_repo, picture_repo))
+
+dispatcher.registrate_cmd(
+    "r_suggest_something", SuggestSomethingCommandContructor(user_repo, picture_repo)
+)
+dispatcher.registrate_cmd(
+    "r_show_something_verbose", ShowSomethingVerboseCommandContructor(user_repo, picture_repo)
+)
 
 nlprocessor = NLProcessor(dispatcher, conv_ctx_repo)
 rec_system = RecomendationSystem(picture_repo)
+pictures = picture_repo.select_all()
+rec_system.add_measure_dict("General-driven", calc_measure_function(pictures, calc_measure_main))
+rec_system.add_measure_dict("Money-driven", calc_measure_function(pictures, calc_measure_money))
 rec_service = RecomendationService(nlprocessor, user_repo, conv_ctx_repo, rec_system)
 
 

@@ -7,7 +7,7 @@ from src.repositories.pirtures_repo import PicturesRepositoryList
 from src.rec_system.commands.other_cmds.not_found_command import NotFoundCommand
 from src.domain.picture import Picture
 
-class SuggestSomethingCommandContructor(ICommandConstructor):
+class ShowSomethingVerboseCommandContructor(ICommandConstructor):
     user_repo: UserRepositoryList
     picture_repo: PicturesRepositoryList
 
@@ -17,22 +17,22 @@ class SuggestSomethingCommandContructor(ICommandConstructor):
         self.picture_repo = picture_repo
 
     def construct(self, _: CommandRecognizerResult) -> RecSystemCommandBase:
-        return SuggestSomethingCommand(self.user_repo, self.picture_repo)
+        return ShowSomethingVerboseCommand(self.user_repo, self.picture_repo)
 
 
-class SuggestSomethingCommandResponse(ICommandResponse):
+class ShowSomethingVerboseCommandResponse(ICommandResponse):
     suggestion_list = None
 
     def __init__(self, suggestion_list: list[Picture]):
         self.suggestion_list = suggestion_list
 
     def form_message(self) -> str:
-        suggestions_str = "\n".join([f"#{e}: {pic.name}" for e, pic in enumerate(self.suggestion_list)])
+        suggestions_str = "\n".join([f"#{e}: {pic.name}, price = {pic.sale_price}" for e, pic in enumerate(self.suggestion_list)])
         response = f"Рекомендую вам посмотреть на след. экспонаты:\n{suggestions_str}"
         return response
 
 
-class SuggestSomethingCommand(RecSystemCommandBase):
+class ShowSomethingVerboseCommand(RecSystemCommandBase):
     user_repo: UserRepositoryList
     picture_repo: PicturesRepositoryList
 
@@ -44,5 +44,5 @@ class SuggestSomethingCommand(RecSystemCommandBase):
     def execute(self) -> ICommandResponse:
         rec_system = self.executor
         items = rec_system.give_recomendation(self.user, limit=10)
-        response = SuggestSomethingCommandResponse(suggestion_list=items)
+        response = ShowSomethingVerboseCommandResponse(suggestion_list=items)
         return response

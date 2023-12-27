@@ -6,13 +6,8 @@ from src.rec_system.recomendation_system import RecomendationSystem
 
 
 class ShowPossibleStrategiesCommandContructor(ICommandConstructor):
-    rec_system: RecomendationSystem = None
-
-    def __init__(self, rec_system: RecomendationSystem) -> None:
-        self.rec_system = rec_system
-
     def construct(self, _: CommandRecognizerResult) -> RecSystemCommandBase:
-        return ShowPossibleStrategiesCommand(self.rec_system)
+        return ShowPossibleStrategiesCommand()
 
 
 class ShowPossibleStrategiesCommandResponse(ICommandResponse):
@@ -22,16 +17,11 @@ class ShowPossibleStrategiesCommandResponse(ICommandResponse):
         self.strategy_name_list = strategy_name_list
 
     def form_message(self) -> str:
-        return f"Возможные рекомендательные стратегии: {self.strategy_name_list}"
+        strategy_name_list = "\n".join(self.strategy_name_list)
+        return f"Возможные рекомендательные стратегии:\n{strategy_name_list}"
 
 
 class ShowPossibleStrategiesCommand(RecSystemCommandBase):
-    rec_system: RecomendationSystem = None
-
-    def __init__(self, rec_system: RecomendationSystem) -> None:
-        super().__init__()
-        self.rec_system = rec_system
-
     def execute(self) -> ICommandResponse:
-        strategy_name_list = self.rec_system.get_strategies()
+        strategy_name_list = self.executor.get_strategies()
         return ShowPossibleStrategiesCommandResponse(strategy_name_list)

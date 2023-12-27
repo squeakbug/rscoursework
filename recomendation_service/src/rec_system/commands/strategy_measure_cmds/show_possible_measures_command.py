@@ -6,13 +6,8 @@ from src.rec_system.recomendation_system import RecomendationSystem
 
 
 class ShowPossibleMeasuresCommandContructor(ICommandConstructor):
-    rec_system: RecomendationSystem = None
-
-    def __init__(self, rec_system: RecomendationSystem) -> None:
-        self.rec_system = rec_system
-
     def construct(self, _: CommandRecognizerResult) -> RecSystemCommandBase:
-        return ShowPossibleMeasuresCommand(self.rec_system)
+        return ShowPossibleMeasuresCommand()
 
 
 class ShowPossibleMeasuresCommandResponse(ICommandResponse):
@@ -22,16 +17,14 @@ class ShowPossibleMeasuresCommandResponse(ICommandResponse):
         self.measure_name_list = measure_name_list
 
     def form_message(self) -> str:
-        return f"Возможные рекомендательные стратегии: {self.measure_name_list}"
+        measure_list_str = "\n".join(self.measure_name_list)
+        return f"Возможные рекомендательные меры:\n{measure_list_str}"
 
 
 class ShowPossibleMeasuresCommand(RecSystemCommandBase):
-    rec_system: RecomendationSystem = None
-
-    def __init__(self, rec_system: RecomendationSystem) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.rec_system = rec_system
 
     def execute(self) -> ICommandResponse:
-        measure_name_list = self.rec_system.get_measures()
+        measure_name_list = self.executor.get_measures()
         return ShowPossibleMeasuresCommandResponse(measure_name_list)

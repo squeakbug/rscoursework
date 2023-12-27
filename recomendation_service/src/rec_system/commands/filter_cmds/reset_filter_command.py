@@ -7,7 +7,8 @@ from src.rec_system.filter import Filter
 
 class ResetFilterCommandContructor(ICommandConstructor):
     def construct(self, cmd_reg_res: CommandRecognizerResult) -> RecSystemCommandBase:
-        filter_name = cmd_reg_res.matchings["filter_name"]
+        filter_name_list = cmd_reg_res.matchings["filter_name"]
+        filter_name = " ".join(filter_name_list)
         return ResetFilterCommand(filter_name=filter_name)
 
 
@@ -19,7 +20,7 @@ class ResetFilterCommandResponse(ICommandResponse):
         self.filter_name = filter_name
 
     def form_message(self) -> str:
-        return f"Значение фильтра {self.filter_name} было сброшено"
+        return f"Значение фильтра \"{self.filter_name}\" было сброшено"
 
 
 class ResetFilterCommand(RecSystemCommandBase):

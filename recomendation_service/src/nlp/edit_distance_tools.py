@@ -191,6 +191,7 @@ def replace_measure_function_name(user_input: str):
 
 def get_most_similar_strategy_name(user_input: str):
     strategies_names = ["рекомендация вначале", "фильтрация вначале"]
+    result = get_most_similar_base(user_input, strategies_names)
     return get_most_similar_base(user_input, strategies_names)
 
 

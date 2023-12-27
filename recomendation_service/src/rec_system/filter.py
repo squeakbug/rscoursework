@@ -42,16 +42,24 @@ def filter_value_cast(filter_name: str, filter_value: str):
     string_filters = ["name", "full_name", "country", "style", "subject", "genre", "medium"]
     if filter_name in string_filters:
         return filter_value
-    
-    int_filters = ["width_min", "width_max", "height_min", "height_max",
-                   "sale_price_min", "sale_price_max", "century_min", "century_max"]
+
+    int_filters = [
+        "width_min",
+        "width_max",
+        "height_min",
+        "height_max",
+        "sale_price_min",
+        "sale_price_max",
+        "century_min",
+        "century_max",
+    ]
     if filter_name in int_filters:
         return int(filter_value)
-    
+
     bool_filters = ["exhibition", "for_sale", "restored"]
     if filter_name in bool_filters:
         if filter_value == "да":
-            return True 
+            return True
         if filter_value == "нет":
             return False
 

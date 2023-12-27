@@ -1,3 +1,7 @@
+rule(r_suggest_something, IM, A, IM, Z) :-
+    suggest(A, B),
+    something(B, Z).
+
 rule(r_suggest_something, OM, A, IM, Z) :-
     suggest(A, B),
     similar(B, C),
@@ -24,4 +28,7 @@ rule(r_suggest_dislike_pictures, OM, A, IM, Z) :-
     to(B, Name, Z),
     OM = IM.put(suggestion, Name).
 
-
+rule(r_show_something_verbose, IM, A, IM, Z) :-
+    show(A, B),
+    recomendation(B, C),
+    verbose(C, Z).

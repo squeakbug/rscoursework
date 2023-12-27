@@ -6,7 +6,7 @@ from src.repositories.conversation_context_repo import ConversationContextReposi
 from src.repositories.user_repo import UserRepositoryList
 from src.rec_system.commands.filter_cmds.add_filter_command import AddFilterCommand
 from src.rec_system.commands.other_cmds.unknown_command import UnknownCommandResponse
-from src.nlp.edit_distance_tools import replace_filter_name
+from src.nlp.edit_distance_tools import replace_filter_name, get_most_similar_filter_name
 from src.rec_system.filter import filter_value_cast
 
 
@@ -36,7 +36,7 @@ class FilterValueEqCommandResponse(ICommandResponse):
         self.filter_value = filter_value
 
     def form_message(self) -> str:
-        return f"Значение фильтра \"{self.filter_name}\" установлено на {self.filter_value}"
+        return f'Значение фильтра "{self.filter_name}" установлено на {self.filter_value}'
 
 
 class FilterValueEqCommand(RecSystemCommandBase):
@@ -63,6 +63,7 @@ class FilterValueEqCommand(RecSystemCommandBase):
         print(last_request)
         user_filter_name = last_request.filter_name
         domain_filter_name = replace_filter_name(user_filter_name)
+        user_filter_name = get_most_similar_filter_name(user_filter_name)
         casted_filter_value = filter_value_cast(domain_filter_name, self.filter_value)
         setattr(self.user.filter, domain_filter_name, casted_filter_value)
         self.user_repo.update_user(self.user.id, self.user)

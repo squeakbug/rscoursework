@@ -10,6 +10,7 @@ from src.rec_system.filter import (
     filter_items,
 )
 from src.domain.picture import Picture
+from src.domain.user import User
 from src.repositories.pirtures_repo import PicturesRepositoryList
 
 
@@ -22,10 +23,7 @@ def find_self(lst, key):
 
 class RecomendationSystem:
     picture_repo: PicturesRepositoryList = None
-    measure_money_matrix_dict = None
-    measure_base_matrix_dict = None
-    min_values: Ranger = None
-    closeness_strategy: ClosenessStrategy = None
+    measures = dict()
 
     def __init__(self, picture_repo: PicturesRepositoryList) -> None:
         self.picture_repo = picture_repo
@@ -33,45 +31,29 @@ class RecomendationSystem:
     def get_default_measure_func_name(
         self,
     ) -> str:
-        return ""
+        return "General-driven"
 
     def get_default_strategy_name(
         self,
     ) -> str:
-        return ""
+        return "FilterFirst"
 
     def get_strategies(
         self,
     ) -> list:
-        return []
+        return ["RecomendFirst", "FilterFirst"]
 
     def get_measures(
         self,
     ) -> list:
-        return []
+        return ["General-driven", "Money-driven"]
 
-    def set_closeness_strategy(self, closeness_strategy: ClosenessStrategy):
-        self.closeness_strategy = closeness_strategy
-
-    def calc_measure_function(self, calc_func):
-        self.min_values = calc_ranger(self.items)
-        self.measure_matrix_dict = dict(
-            [
-                (
-                    item1.name,
-                    dict(
-                        [
-                            (item2.name, calc_func(item1, item2, self.min_values))
-                            for item2 in self.items
-                        ]
-                    ),
-                )
-                for item1 in self.items
-            ]
-        )
+    def add_measure_dict(self, name, measure_matrix_dict):
+        self.measures[name] = measure_matrix_dict
 
     def do_recomendation(
         self,
+        measure_name: str,
         items: list[Picture],
         likes: list[Picture],
         dislikes: list[Picture],
@@ -80,8 +62,9 @@ class RecomendationSystem:
         """
         В сортированном по близости к лайкам списке уменьшаем вес элементов на их вес в списке близких к дизлайкам элементов
         """
-        names_like_likes = self.query_names_like_weighted(items, likes, None)
-        names_like_dislikes = self.query_names_like_weighted(items, dislikes, None)
+        print("len(likes) = ", len(likes))
+        names_like_likes = self.query_names_like_weighted(measure_name, items, likes, None)
+        names_like_dislikes = self.query_names_like_weighted(measure_name, items, dislikes, None)
 
         names = []
         for liked_name in names_like_likes:
@@ -120,16 +103,16 @@ class RecomendationSystem:
         return items
 
     def query_names_like_weighted(
-        self, items: list[Picture], likes: list[Picture], limit: Optional[int]
+        self, measure_name: str, items: list[Picture], likes: list[Picture], limit: Optional[int]
     ) -> list[tuple[Picture, float]]:
         for like in likes:
-            row = self.measure_matrix_dict[like.name]
+            row = self.measures[measure_name][like.name]
             if row == None:
                 raise Exception("spam", "eggs")
 
         result = dict([(item.name, 0.0) for item in items])
         for like in likes:
-            row = self.measure_matrix_dict[like.name]
+            row = self.measures[measure_name][like.name]
             for name in row.keys():
                 if not result[name] is None:
                     result[name] += row[name]
@@ -163,9 +146,11 @@ class RecomendationSystem:
 
     def give_recomendation_filter_first_strategy(
         self,
+        measure_name: str,
         likes: list[Picture],
         dislikes: list[Picture],
         filter: Filter,
+        limit: int
     ) -> list:
         """
         Получить отсортированный по "близости" список рекомендаций:
@@ -178,14 +163,16 @@ class RecomendationSystem:
         for like in likes:
             if not like.name in filtered_item_names:
                 filtered_items.append(like)
-        items = self.do_recomendation(items, filtered_items, dislikes, None)
+        items = self.do_recomendation(measure_name, items, filtered_items, dislikes, limit)
         return items
 
     def give_recomendation_recomend_first_strategy(
         self,
+        measure_name: str,
         likes: list[Picture],
         dislikes: list[Picture],
         filter: Filter,
+        limit: int
     ) -> list:
         """
         Получить отсортированный по "близости" список рекомендаций:
@@ -193,9 +180,25 @@ class RecomendationSystem:
         Make selection based on finded items and filters
         """
         items = self.picture_repo.select_all()
-        items = self.do_recomendation(items, likes, dislikes, None)
-        items = filter_items(items, filter, None)
+        items = self.do_recomendation(measure_name, items, likes, dislikes, limit)
+        items = filter_items(items, filter, limit)
         return items
+
+    def give_recomendation(self, user: User, limit: int):
+        likes = [self.picture_repo.get_picture_by_id(id) for id in user.likes]
+        dislikes = [self.picture_repo.get_picture_by_id(id) for id in user.dislikes]
+        filter = user.filter
+        measure_name = user.measure_func_name
+        strategy = user.strategy_name
+
+        if strategy == "RecomendFirst":
+            return self.give_recomendation_recomend_first_strategy(
+                measure_name, likes, dislikes, filter, limit
+            )
+        else:
+            return self.give_recomendation_filter_first_strategy(
+                measure_name, likes, dislikes, filter, limit
+            )
 
 
 """
