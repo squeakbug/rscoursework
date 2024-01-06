@@ -1,4 +1,21 @@
-*Back in the years I thought AI was scary, data science required PhD, and computer vision was magic.*\
-*Now it's all just 5 lines of code in Python*
+## Рекомендательная система по подбору произведений искусства с естественно-языковым интерфейсом, распознающим 15 фраз)
 
-### Попытка написать что-то работающее на Python
+### Конфигурация
+
+Создать файл `.env` по пути `recomendation_service/.env` со следующим содержимым:
+```
+TOKEN=<YOUR_TELEGRAM_TOKEN>
+DATA_PATH_ROOT="../data"
+```
+
+### Сборка образа
+
+```
+docker compose build 
+```
+
+### Запуск
+
+```
+docker compose up -d
+```

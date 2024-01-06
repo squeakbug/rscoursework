@@ -11,12 +11,14 @@ services:
       - services-network
   
   recomendation-service:
-    build: ./recomendation_service
+    build:
+      context: ./
+      dockerfile: ./recomendation_service/Dockerfile
     image: squeakbug73/recomendation-service:0.1
     restart: unless-stopped
     container_name: recomendation-service
-    ports:
-      - "8080:8080"
+    environment:
+      - PROLOG_SERVER_ADDRESS=http://recognizer-service:8080
     networks:
       - services-network
 

@@ -81,8 +81,10 @@ def from_dataset_item_to_pic(item: DatasetItem) -> Picture:
     return pic
 
 
+config = make_config()
 picture_repo = PicturesRepositoryList()
-with open("../data/query-rk1-aicourse-10-14-2023-QueryResult.csv", "r") as csv_file:
+data_root = config["DATA_PATH_ROOT"]
+with open(f"{data_root}/query-rk1-aicourse-10-14-2023-QueryResult.csv", "r") as csv_file:
     reader = csv.reader(csv_file)
     reader = DataclassReader(csv_file, DatasetItem, validate_header=False)
 
@@ -91,7 +93,6 @@ with open("../data/query-rk1-aicourse-10-14-2023-QueryResult.csv", "r") as csv_f
         picture_repo.create_picture(pic)
 
 
-config = make_config()
 user_repo = UserRepositoryList()
 conv_ctx_repo = ConversationContextRepositoryList()
 dispatcher = CommandDispatcherProlog(config)
